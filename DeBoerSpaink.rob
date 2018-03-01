@@ -1,59 +1,78 @@
-; RoboCom program
+NAME XBOT9001
 
-NAME Test
+Bank StartPlus
+  SET #Active, 999
 
-Bank Main
-  @Loop
-  Create 2, 3, 0 ;Maak nieuwe robot
-  Trans 2, 1	 ;Kopieer Banks
-  Trans 3, 2
-  Trans 4, 3
-  Set %Active, 1 ;Activeer robot
-  Turn 0	 ;Draai linksom
-  JUMP @Loop	 ;Nog een keertje
+  SET #2, 0
+  @Loop1
+  ADD #2, 1
+
+  ; Maak en activeer nieuwe robot
+  CREATE 2, 3, 0
+  TRANS 2, 1
+  TRANS 3, 2
+  TRANS 4, 3
+  SET %Active, 1
+
+  ; Draai en herhaal
+  TURN 0
+  COMP #2, 4
+    JUMP @Loop1
+
+  @DeathLoop
+  JUMP @DeathLoop
 
 Bank Search
-  @Loop2	 ;Kopieer naar voren
-   Create 2, 3, 0
-   Trans 1, 1
-   Trans 2, 2
-   Trans 3, 3
-   Set %Active, 1
-   Scan #1
-   COMP #1, 0	 ;Vijand gevonden?
+  ; Scan vakje
+  SCAN #1
+
+  ; Als niet leeg
+  COMP #1, 0
     JUMP @NotEmpty
-  JUMP @Loop2
+
+  ; Maak en activeer nieuwe robot
+  CREATE 2, 3, 0
+  TRANS 1, 1
+  TRANS 2, 2
+  TRANS 3, 3
+  SET %Active, 1
+
+  ; Stop
+  JUMP @End1
+
   @NotEmpty
-  Scan #1
-  COMP #1, 1	 ;Vijand gevonden?
-   JUMP @END
-  SET %Active,0	 ;Deactiveer vijand
-  TRANS 2,1	 ;Kopieer Sterven
-  SET %Active,1	 ;Sterf
-  @EMPTY
-   SCAN #1
-   COMP #1, 0
-  JUMP @EMPTY
-  Create 2, 1, 0 ;Kopieer nog een keer de "locate" robot
-  Trans 3, 1
-  Set %Active, 1 ;Activeer robot
-  BJUMP 2, 1
-  @END
-  JUMP @END
-  
-BANK TurnKillAndDie  
-  SET #1, 0
-  @Loop3 	 ;Draai 180 graden
-   TURN 1
-   ADD #1, 1
-   COMP #1, 2
-  JUMP @Loop3
-  SET %Active,0	 ;Vermoord ander
-  TRANS 2,1
-  SET %Active,1
+
+  ; Als zelfde bot
+  COMP #1, 1
+    JUMP @End1
+
+  ; Injecteer sterf virus
+  SET %Active, 0
+  TRANS 2, 1
+  SET %Active, 2
+
+  ; Stop deze robot
+  @End1
+  SET #Active, 0
+
+BANK NukeBehind
+  ; Draai om
+  TURN 0
+  TURN 0
+
+  ; Stop als core
+  COMP %Active, 0
+    JUMP @End2
+
+  ; Injecteer sterf virus
+  TRANS 1, 1
+  SET %Active, 2
+
+  ; Sterf
+  @End2
   DIE
 
 BANK Locate
-  @LocateLoop
-   TURN 0
-  JUMP @LocateLoop
+  @Loop3
+  TURN 0
+  JUMP @Loop3
