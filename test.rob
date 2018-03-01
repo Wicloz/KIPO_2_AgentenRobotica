@@ -1,0 +1,59 @@
+; RoboCom program
+
+NAME Test
+
+Bank Main
+  @Loop
+  Create 2, 3, 0 ;Maak nieuwe robot
+  Trans 2, 1	 ;Kopieer Banks
+  Trans 3, 2
+  Trans 4, 3
+  Set %Active, 1 ;Activeer robot
+  Turn 0	 ;Draai linksom
+  JUMP @Loop	 ;Nog een keertje
+
+Bank Search
+  @Loop2	 ;Kopieer naar voren
+   Create 2, 3, 0
+   Trans 1, 1
+   Trans 2, 2
+   Trans 3, 3
+   Set %Active, 1
+   Scan #1
+   COMP #1, 0	 ;Vijand gevonden?
+    JUMP @NotEmpty
+  JUMP @Loop2
+  @NotEmpty
+  Scan #1
+  COMP #1, 1	 ;Vijand gevonden?
+   JUMP @END
+  SET %Active,0	 ;Deactiveer vijand
+  TRANS 2,1	 ;Kopieer Sterven
+  SET %Active,1	 ;Sterf
+  @EMPTY
+   SCAN #1
+   COMP #1, 0
+  JUMP @EMPTY
+  Create 2, 1, 0 ;Kopieer nog een keer de "locate" robot
+  Trans 3, 1
+  Set %Active, 1 ;Activeer robot
+  BJUMP 2, 1
+  @END
+  JUMP @END
+  
+BANK TurnKillAndDie  
+  SET #1, 0
+  @Loop3 	 ;Draai 180 graden
+   TURN 1
+   ADD #1, 1
+   COMP #1, 2
+  JUMP @Loop3
+  SET %Active,0	 ;Vermoord ander
+  TRANS 2,1
+  SET %Active,1
+  DIE
+
+BANK Locate
+  @LocateLoop
+   TURN 0
+  JUMP @LocateLoop
