@@ -25,9 +25,9 @@ Bank StartPlus
   COMP #Active, 999
     JUMP @DeathLoopDone
   JUMP @DeathLoop
-    
+
   @DeathLoopDone
-  
+
   SET %Active, 0
   TRANS 6, 1
   SET %Active, 1
@@ -44,9 +44,10 @@ Bank StartPlus
   TRANS 6, 1
   SET %Active, 1
   TURN 0
-  
+
   COMP #Active, 100
     DIE
+  SET #Active, 0
 
 Bank Search
   ; Scan vakje
@@ -77,37 +78,50 @@ Bank Search
   ; Injecteer sterf virus
   SET %Active, 0
   TRANS 3, 1
-  SET %Active, 2
+  SET %Active, 3
 
-  ; Wacht tot vakje leeg is
-  @WaitEmpty
-  SCAN #1
-  COMP #1, 0
-    JUMP @WaitEmpty
-    
-  ; Maak speciale locate bot
-  CREATE 2, 1, 0
-  TRANS 2, 1
-  SET %Active, 1
-  
   ; Infecteer zichzelf
   TURN 0
   TURN 0
   SET %Active, 0
   TRANS 4, 1
   SET %Active, 2
+  TURN 0
+  TURN 0
+
+  ; Wacht tot vakje leeg is
+  @WaitEmpty
+  SCAN #1
+  COMP #1, 0
+    JUMP @WaitEmpty
+
+  ; Maak speciale locate bot
+  CREATE 2, 1, 0
+  TRANS 2, 1
+  SET %Active, 1
+
+  ; Sterf
   DIE
-  
+
   ; Stop deze robot
   @End1
   SET #Active, 0
-  
+
 BANK Locate
   @Loop3
   TURN 0
   JUMP @Loop3
 
 BANK StartDestroyOther
+  ; Verwijder naar voren bij de eerste
+  COMP #Active, 3
+    JUMP @NotFirst
+  SET %Active, 0
+  TRANS 5, 1
+  SET %Active, 2
+  SET #Active, 2
+  @NotFirst
+
   ; Draai om
   TURN 0
   TURN 0
@@ -148,13 +162,13 @@ BANK StartDestroySelf
   ; Sterf
   @End3
   DIE
-  
+
 BANK DestroyForward
   ; Kijk of zelfde
   SCAN #1
   COMP #1, 2
     JUMP @End4
-    
+
   ; Injecteer sterf virus
   SET %Active, 0
   TRANS 1, 1
@@ -163,4 +177,3 @@ BANK DestroyForward
   ; Sterf
   @End4
   DIE
-  
