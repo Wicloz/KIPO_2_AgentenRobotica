@@ -8,10 +8,12 @@ Bank StartPlus
   ADD #2, 1
 
   ; Maak en activeer nieuwe robot
-  CREATE 2, 3, 0
+  CREATE 2, 5, 0
   TRANS 2, 1
   TRANS 3, 2
   TRANS 4, 3
+  TRANS 5, 4
+  TRANS 6, 5
   SET %Active, 1
 
   ; Draai en herhaal
@@ -20,7 +22,31 @@ Bank StartPlus
     JUMP @Loop1
 
   @DeathLoop
+  COMP #Active, 999
+    JUMP @DeathLoopDone
   JUMP @DeathLoop
+    
+  @DeathLoopDone
+  
+  SET %Active, 0
+  TRANS 6, 1
+  SET %Active, 1
+  TURN 0
+  SET %Active, 0
+  TRANS 6, 1
+  SET %Active, 1
+  TURN 0
+  SET %Active, 0
+  TRANS 6, 1
+  SET %Active, 1
+  TURN 0
+  SET %Active, 0
+  TRANS 6, 1
+  SET %Active, 1
+  TURN 0
+  
+  COMP #Active, 100
+    DIE
 
 Bank Search
   ; Scan vakje
@@ -31,10 +57,12 @@ Bank Search
     JUMP @NotEmpty
 
   ; Maak en activeer nieuwe robot
-  CREATE 2, 3, 0
+  CREATE 2, 5, 0
   TRANS 1, 1
   TRANS 2, 2
   TRANS 3, 3
+  TRANS 4, 4
+  TRANS 5, 5
   SET %Active, 1
 
   ; Stop
@@ -48,23 +76,51 @@ Bank Search
 
   ; Injecteer sterf virus
   SET %Active, 0
-  TRANS 2, 1
+  TRANS 3, 1
   SET %Active, 2
 
+  ; Wacht tot vakje leeg is
+  @WaitEmpty
+  SCAN #1
+  COMP #1, 0
+    JUMP @WaitEmpty
+    
+  ; Maak speciale locate bot
+  CREATE 2, 1, 0
+  TRANS 2, 1
+  SET %Active, 1
+  
+  ; Infecteer zichzelf
+  TURN 0
+  TURN 0
+  SET %Active, 0
+  TRANS 4, 1
+  SET %Active, 2
+  DIE
+  
   ; Stop deze robot
   @End1
   SET #Active, 0
+  
+BANK Locate
+  @Loop3
+  TURN 0
+  JUMP @Loop3
 
-BANK NukeBehind
+BANK StartDestroyOther
   ; Draai om
   TURN 0
   TURN 0
 
   ; Stop als core
-  COMP %Active, 0
-    JUMP @End2
+  COMP %Active, 999
+    JUMP @NotCore1
+  SET %Active, 100
+  JUMP @End2
+  @NotCore1
 
   ; Injecteer sterf virus
+  SET %Active, 0
   TRANS 1, 1
   SET %Active, 2
 
@@ -72,7 +128,39 @@ BANK NukeBehind
   @End2
   DIE
 
-BANK Locate
-  @Loop3
+BANK StartDestroySelf
+  ; Draai om
   TURN 0
-  JUMP @Loop3
+  TURN 0
+
+  ; Stop als core
+  COMP %Active, 999
+    JUMP @NotCore2
+  SET %Active, 200
+  JUMP @End3
+  @NotCore2
+
+  ; Injecteer sterf virus
+  SET %Active, 0
+  TRANS 1, 1
+  SET %Active, 2
+
+  ; Sterf
+  @End3
+  DIE
+  
+BANK DestroyForward
+  ; Kijk of zelfde
+  SCAN #1
+  COMP #1, 2
+    JUMP @End4
+    
+  ; Injecteer sterf virus
+  SET %Active, 0
+  TRANS 1, 1
+  SET %Active, 2
+
+  ; Sterf
+  @End4
+  DIE
+  
