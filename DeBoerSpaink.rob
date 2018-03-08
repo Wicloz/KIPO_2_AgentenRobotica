@@ -8,12 +8,13 @@ Bank StartPlus
   ADD #2, 1
 
   ; Maak en activeer nieuwe robot
-  CREATE 2, 5, 0
+  CREATE 2, 6, 0
   TRANS 2, 1
   TRANS 3, 2
   TRANS 4, 3
   TRANS 5, 4
   TRANS 6, 5
+  TRANS 7, 6
   SET %Active, 1
 
   ; Draai en herhaal
@@ -56,14 +57,15 @@ Bank Search
   ; Als niet leeg
   COMP #1, 0
     JUMP @NotEmpty
-
+    
   ; Maak en activeer nieuwe robot
-  CREATE 2, 5, 0
+  CREATE 2, 6, 0
   TRANS 1, 1
   TRANS 2, 2
   TRANS 3, 3
   TRANS 4, 4
   TRANS 5, 5
+  TRANS 6, 6
   SET %Active, 1
 
   ; Stop
@@ -96,8 +98,9 @@ Bank Search
     JUMP @WaitEmpty
 
   ; Maak speciale locate bot
-  CREATE 2, 1, 0
+  CREATE 2, 2, 1
   TRANS 2, 1
+  TRANS 6, 2
   SET %Active, 1
 
   ; Sterf
@@ -108,9 +111,41 @@ Bank Search
   SET #Active, 0
 
 BANK Locate
-  @Loop3
+  ; Beweeg naar andere core
+  COMP #Active, 10
+    TURN 0
+  
+  @GoToCoreLoop
+  SCAN #1
+  COMP #1, 1
+    MOVE
+  COMP #1, 1
+    JUMP @GoToCoreLoop
+    
   TURN 0
-  JUMP @Loop3
+  TURN 0
+    
+  ; Maak 2e locate
+  COMP #Active, 1
+    JUMP @SkipNewLocate
+  CREATE 2, 2, 1
+  TRANS 1, 1
+  TRANS 2, 2
+  SET %Active, 10
+  @SkipNewLocate
+  
+  ; Maak kruis dingen
+  TURN 0
+  CREATE 2, 1, 1
+  TRANS 2, 1
+  SET %Active, 1
+  
+  TURN 1
+  CREATE 0, 1, 0
+  TRANS 1, 1
+  
+  ; Stop
+  SET #Active, 0
 
 BANK StartDestroyOther
   ; Verwijder naar voren bij de eerste
@@ -177,3 +212,15 @@ BANK DestroyForward
   ; Sterf
   @End4
   DIE
+  
+BANK MakeCross
+  TURN 0
+  MOVE
+  
+  TURN 1
+  CREATE 0, 1, 0
+  TRANS 1, 1
+      
+  ; Stop
+  SET #Active, 0
+  
