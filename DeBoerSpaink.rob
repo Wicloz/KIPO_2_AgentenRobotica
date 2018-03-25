@@ -23,39 +23,44 @@ Bank StartPlus
   COMP #2, 4
     JUMP @Loop1
 
+  ; Wacht op verwijderen
   @DeathLoop
   COMP #Active, 999
     JUMP @DeathLoopDone
   JUMP @DeathLoop
 
+  ; Verwijder armen
   @DeathLoopDone
 
   SET #2, 0
   @Loop2
   ADD #2, 1
-  
+
   SCAN #1
   COMP #1, 2
     JUMP @SkipLoop2
   COMP %Active, 42
-    JUMP @DontSkipLoop2
+    JUMP @DontSkipLoop21
   JUMP @SkipLoop2
-  @DontSkipLoop2  
-  
+  @DontSkipLoop21
+  COMP %Active, 3
+    JUMP @DontSkipLoop22
+  JUMP @SkipLoop2
+  @DontSkipLoop22
+
   SET %Active, 0
   TRANS 8, 1
   TRANS 6, 2
   SET %Active, 1
-  
+
   @SkipLoop2
   TURN 0
-  
+
   COMP #2, 4
     JUMP @Loop2
 
-  COMP #Active, 100
-    DIE
-  SET #Active, 0
+  ; Sterf
+  DIE
 
 Bank Search
   ; Scan vakje
@@ -64,8 +69,13 @@ Bank Search
   ; Als niet leeg
   COMP #1, 0
     JUMP @NotEmpty
-    
+
   ; Maak en activeer nieuwe robot
+  SET #2, 0
+  @Loop6
+  ADD #2, 1
+  COMP #2, 100
+    JUMP @Loop6
   CREATE 2, 7, 0
   TRANS 1, 1
   TRANS 2, 2
@@ -85,7 +95,9 @@ Bank Search
   COMP #1, 1
     JUMP @End1
 
-  ; Injecteer sterf virus
+  SET #Active, 4
+
+  ; Injecteer ander
   SET %Active, 0
   TRANS 7, 1
   TRANS 3, 2
@@ -94,28 +106,30 @@ Bank Search
   ; Infecteer zichzelf
   TURN 0
   TURN 0
-  
+
   COMP %Active, 999
     JUMP @NotCore
-    
+
   SET %Active, 200
   JUMP @CoreDone
-  
+
   @NotCore
   SET %Active, 0
   TRANS 7, 1
   TRANS 4, 2
   SET %Active, 2
-  
+
   @CoreDone
-  
+
   TURN 0
   TURN 0
 
   ; Wacht tot vakje klaar is
-  @WaitDone
-  COMP %Active, 0
-    JUMP @WaitDone
+  SET #2, 0
+  @Loop7
+  ADD #2, 1
+  COMP #2, 100
+    JUMP @Loop7
   SET #Active, 42
   BJUMP 2, 1
 
@@ -124,54 +138,50 @@ Bank Search
   SET #Active, 0
 
 BANK Locate
+  ; Ga naar de overkant
   @GoToCoreLoop
   SCAN #1
-  
+
   COMP #1, 2
     JUMP @NotSelf
-  SET %Active, 43
   DIE
-  @NotSelf 
-  
-  COMP #Active, 43
-    JUMP @NoDie
-  DIE
-  @NoDie
-  
+  @NotSelf
+
   COMP #1, 1
     MOVE
   COMP #1, 1
     JUMP @GoToCoreLoop
-    
+
+  ; En draai weer om
   TURN 0
   TURN 0
-  
+
   ; Maak 2e locate
   COMP #Active, 42
     JUMP @SkipNewLocate
-    
+
   SET #2, 0
   @Loop3
   ADD #2, 1
   COMP #2, 300
-    JUMP @Loop3  
-    
+    JUMP @Loop3
+
   CREATE 2, 6, 1
   TRANS 2, 1
   TRANS 6, 6
   SET %Active, 1
   @SkipNewLocate
-  
+
   ; Maak kruis dingen
   TURN 0
   CREATE 2, 1, 1
   TRANS 6, 1
   SET %Active, 1
-  
+
   TURN 1
   CREATE 0, 1, 0
   TRANS 1, 1
-  
+
   ; Stop
   SET #Active, 0
 
@@ -179,16 +189,16 @@ BANK StartDestroyOther
   ; Verwijder naar voren bij de eerste
   COMP #Active, 3
     JUMP @NotFirst
-    
+
   SCAN #1
   COMP #1, 2
     JUMP @NotFirst
-      
+
   SET %Active, 0
   TRANS 7, 1
   TRANS 5, 2
   SET %Active, 2
-  
+
   @NotFirst
 
   ; Draai om
@@ -219,7 +229,7 @@ BANK StartDestroyOther
   @End2
   COMP #Active, 3
     DIE
-  SET #Active, 0
+  JUMP 0
 
 BANK StartDestroySelf
   ; Draai om
@@ -251,10 +261,18 @@ BANK StartDestroySelf
   DIE
 
 BANK DestroyForward
-  ; Kijk of zelfde
+  ; Kijk of goede
   SCAN #1
   COMP #1, 2
     JUMP @End4
+  COMP %Active, 3
+    JUMP @Cont4
+  JUMP @End4
+  @Cont4
+  COMP %Active, 4
+    JUMP @Cont4MaarNuEcht
+  JUMP @End4
+  @Cont4MaarNuEcht
 
   ; Injecteer sterf virus
   SET %Active, 0
@@ -265,18 +283,17 @@ BANK DestroyForward
   ; Sterf
   @End4
   DIE
-  
+
 BANK MakeCross
   TURN 0
   MOVE
-  
+
   TURN 1
   CREATE 0, 1, 0
-  TRANS 1, 1
-      
+
   ; Stop
   SET #Active, 0
-  
+
 BANK SuperBank
   BJUMP 2, 1
   BJUMP 2, 1
@@ -326,10 +343,3 @@ BANK SuperBank
   BJUMP 2, 1
   BJUMP 2, 1
   BJUMP 2, 1
-  BJUMP 2, 1
-  BJUMP 2, 1
-  BJUMP 2, 1
-  BJUMP 2, 1
-  BJUMP 2, 1
-  BJUMP 2, 1
-  
