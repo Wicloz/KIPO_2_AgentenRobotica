@@ -1,5 +1,7 @@
 NAME XBOT9001
 
+; Deze bank bepaalt de acties van de start robot.
+; Dit bestaat uit het maken en uiteindelijk weer verwijderen van de 4 armen.
 Bank StartPlus
   SET #Active, 999
 
@@ -54,6 +56,9 @@ Bank StartPlus
   ; Sterf
   DIE
 
+; Deze bank is voor de robots waaruit de armen bestaan.
+; Dit bestaat uit langzaam de armen l;aten groeien en daarna wachten op een verwijder commando,
+; en omgaan met tegen de andere kleur botsen.
 Bank Search
   ; Wacht
   SET #2, 0
@@ -154,6 +159,8 @@ Bank Search
   SET %Active, 52
   JUMP 0
 
+; Deze bank is voor de robots die de armen van het uiteindelijke kruis gaan vormen.
+; Hiervoor wordt er een kopie gemaakt en naar de overkant gestuurd.
 BANK Locate
   ; Ga naar de overkant
   @GoToCoreLoop
@@ -203,7 +210,7 @@ BANK Locate
   ; Stop
   SET #Active, 0
 
-; Wordt gebruikt om de 2 zij armen van het uiteindelijke kruis te maken
+; Deze bank wordt gebruikt om de laatste 2 zij armen van het uiteindelijke kruis te maken.
 BANK MakeCrossArm
   TURN 0
   MOVE
