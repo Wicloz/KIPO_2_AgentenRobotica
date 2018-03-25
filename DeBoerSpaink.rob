@@ -285,13 +285,12 @@ BANK DestroyForward
   DIE
 
 BANK MakeCross
+; Wordt gebruikt om de 2 zij armen van het uiteindelijke kruis te maken
+BANK MakeCrossArm
   TURN 0
   MOVE
-
   TURN 1
   CREATE 0, 1, 0
-
-  ; Stop
   SET #Active, 0
 
 BANK SuperBank
