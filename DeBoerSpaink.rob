@@ -9,18 +9,25 @@ Bank StartPlus
   @Loop1
   ADD #2, 1
 
+  ; Stop als naast andere core
+  COMP %Active, 999
+    JUMP @GoodToGo
+  JUMP @SkipCreate
+  @GoodToGo
+
   ; Maak en activeer nieuwe robot
   CREATE 2, 3, 0
   TRANS 2, 1
   TRANS 3, 2
   TRANS 4, 3
   SET %Active, 1
+  @SkipCreate
 
-  ; Effe wachtuh
+  ; Wacht voor betere timing
   SET #3, 0
   @Loop9001
   ADD #3, 1
-  COMP #3, 100
+  COMP #3, 20
     JUMP @Loop9001
 
   ; Draai en herhaal
@@ -64,17 +71,11 @@ Bank Search
   SET #2, 0
   @Loop8
   ADD #2, 1
-  COMP #2, 10
+  COMP #2, 100
     JUMP @Loop8
 
   COMP #Active, 1
     JUMP @DoeCommando
-
-  SET #2, 0
-  @Loop9
-  ADD #2, 1
-  COMP #2, 90
-    JUMP @Loop9
 
   ; Scan vakje
   SCAN #1
