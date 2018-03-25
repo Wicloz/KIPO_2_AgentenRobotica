@@ -292,7 +292,6 @@ BANK MakeCrossArm
   TURN 1
   CREATE 0, 1, 0
   SET #Active, 0
-
 BANK SuperBank
   BJUMP 2, 1
   BJUMP 2, 1
