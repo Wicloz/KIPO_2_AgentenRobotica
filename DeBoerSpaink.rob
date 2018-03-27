@@ -64,8 +64,8 @@ Bank StartPlus
   DIE
 
 ; Deze bank is voor de robots waaruit de armen bestaan.
-; Dit bestaat uit langzaam de armen l;aten groeien en daarna wachten op een verwijder commando,
-; en omgaan met tegen de andere kleur botsen.
+; Dit bestaat uit langzaam de armen laten groeien en daarna wachten op een
+; verwijder commando, en omgaan met tegen de andere kleur botsen.
 Bank Search
   ; Wacht
   SET #2, 0
@@ -160,7 +160,8 @@ Bank Search
   SET %Active, 52
   JUMP 0
 
-; Deze bank is voor de robots die de armen van het uiteindelijke kruis gaan vormen.
+; Deze bank is voor de robots die de armen van het uiteindelijke kruis gaan
+; vormen.
 ; Hiervoor wordt er een kopie gemaakt en naar de overkant gestuurd.
 BANK Locate
   ; Ga naar de overkant
@@ -211,7 +212,8 @@ BANK Locate
   ; Stop
   SET #Active, 0
 
-; Deze bank wordt gebruikt om de laatste 2 zij armen van het uiteindelijke kruis te maken.
+; Deze bank wordt gebruikt om de laatste 2 zij armen van het uiteindelijke
+; kruis te maken.
 BANK MakeCrossArm
   TURN 0
   MOVE
