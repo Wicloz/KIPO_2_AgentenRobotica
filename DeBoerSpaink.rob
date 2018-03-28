@@ -12,8 +12,20 @@ Bank StartPlus
   ; Stop als naast andere core
   COMP %Active, 999
     JUMP @GoodToGo
+  SET #3, 0
+  @Loop9002
+  ADD #3, 1
+  COMP #3, 317
+    JUMP @Loop9002
   JUMP @SkipCreate
   @GoodToGo
+
+  ; Wacht voor betere timing
+  SET #3, 0
+  @Loop9001
+  ADD #3, 1
+  COMP #3, 50
+    JUMP @Loop9001
 
   ; Maak en activeer nieuwe robot
   CREATE 2, 3, 0
