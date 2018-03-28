@@ -35,13 +35,6 @@ Bank StartPlus
   SET %Active, 1
   @SkipCreate
 
-  ; Wacht voor betere timing
-  SET #3, 0
-  @Loop9001
-  ADD #3, 1
-  COMP #3, 50
-    JUMP @Loop9001
-
   ; Draai en herhaal
   TURN 0
   COMP #2, 4
